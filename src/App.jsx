@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence, useInView } from 'framer-motion'
-import { clsx, ClassValue } from 'clsx'
+import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion'
+import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
 // Utility for tailwind class merging
@@ -227,11 +227,329 @@ const FAQItem = ({ question, answer, index }) => {
   )
 }
 
+// HERO SECTION COMPONENT - ВЫДЕЛЕН В ОТДЕЛЬНЫЙ КОМПОНЕНТ
+const HeroSection = () => {
+  const sectionRef = useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"]
+  })
+
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen flex items-center pt-20 overflow-hidden"
+    >
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 bg-white via-gray-50 to-white" />
+
+        {/* Floating LEGO bricks - decorative */}
+        <motion.div
+          animate={{
+            y: [0, -30, 0],
+            rotate: [0, 10, 0],
+          }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-20 left-10 w-16 h-16 bg-red-500 rounded-lg opacity-20 shadow-xl"
+          style={{ y }}
+        />
+        <motion.div
+          animate={{
+            y: [0, 20, 0],
+            rotate: [0, -15, 0],
+          }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute top-40 right-20 w-12 h-12 bg-yellow-400 rounded-lg opacity-20 shadow-xl"
+        />
+        <motion.div
+          animate={{
+            y: [0, -25, 0],
+            rotate: [0, 8, 0],
+          }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute bottom-40 left-1/4 w-20 h-20 bg-blue-500 rounded-lg opacity-20 shadow-xl"
+        />
+        <motion.div
+          animate={{
+            y: [0, 15, 0],
+            rotate: [0, -12, 0],
+          }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+          className="absolute top-1/3 right-1/3 w-14 h-14 bg-green-500 rounded-lg opacity-20 shadow-xl"
+        />
+
+        {/* Grid pattern overlay */}
+        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(239, 68, 68, 0.3) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(239, 68, 68, 0.3) 1px, transparent 1px)`,
+            backgroundSize: '60px 60px'
+          }}
+        />
+      </div>
+
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            style={{ opacity }}
+          >
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="inline-flex items-center gap-2 bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 font-bold px-4 py-2 rounded-full mb-6 border border-red-200 dark:border-red-500/30"
+            >
+              <motion.div
+                animate={{ rotate: [0, 15, -15, 0] }}
+                transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
+              >
+                <SafeIcon name="flame" size={16} />
+              </motion.div>
+              <span className="text-sm">Новая коллекция 2024</span>
+            </motion.div>
+
+            {/* Main Title */}
+            <motion.h1
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.7 }}
+              className="text-5xl md:text-7xl lg:text-8xl font-black text-gray-900 dark:text-white leading-[0.9] mb-6 tracking-tighter"
+            >
+              СТРОЙ
+              <br />
+              <span className="relative inline-block">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500 animate-gradient">
+                  МЕЧТЫ
+                </span>
+                <motion.svg
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ delay: 1, duration: 0.8 }}
+                  className="absolute -bottom-2 left-0 w-full h-3"
+                  viewBox="0 0 200 12"
+                  fill="none"
+                >
+                  <motion.path
+                    d="M2 8C50 2 150 2 198 8"
+                    stroke="url(#gradient)"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                  />
+                  <defs>
+                    <linearGradient id="gradient" x1="0" y1="0" x2="200" y2="0">
+                      <stop stopColor="#ef4444" />
+                      <stop offset="0.5" stopColor="#facc15" />
+                      <stop offset="1" stopColor="#3b82f6" />
+                    </linearGradient>
+                  </defs>
+                </motion.svg>
+              </span>
+            </motion.h1>
+
+            {/* Description */}
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-8 max-w-xl leading-relaxed"
+            >
+              Официальные наборы LEGO для детей и взрослых. Открой мир безграничного творчества с оригинальными конструкторами.
+            </motion.p>
+
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="flex flex-col sm:flex-row gap-4"
+            >
+              <motion.button
+                whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(239, 68, 68, 0.4)" }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
+                className="group relative bg-red-500 hover:bg-red-600 text-white font-bold text-lg px-8 py-4 rounded-2xl shadow-xl shadow-red-500/30 flex items-center justify-center gap-3 transition-all overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  <SafeIcon name="shopping-bag" size={20} />
+                  Смотреть каталог
+                </span>
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-500"
+                  initial={{ x: "100%" }}
+                  whileHover={{ x: 0 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="group bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 text-gray-900 dark:text-white font-bold text-lg px-8 py-4 rounded-2xl flex items-center justify-center gap-3 transition-all border-2 border-gray-200 dark:border-slate-700 hover:border-red-500 dark:hover:border-red-500"
+              >
+                <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-500/20 flex items-center justify-center group-hover:bg-red-500 group-hover:text-white transition-all">
+                  <SafeIcon name="play" size={18} className="ml-0.5" />
+                </div>
+                Видео-обзор
+              </motion.button>
+            </motion.div>
+
+            {/* Social Proof */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+              className="flex items-center gap-6 mt-12"
+            >
+              <div className="flex -space-x-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.8 + i * 0.1 }}
+                    className="w-10 h-10 rounded-full bg-gray-300 dark:bg-slate-700 border-2 border-white dark:border-slate-950 overflow-hidden"
+                  >
+                    <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="" className="w-full h-full object-cover" />
+                  </motion.div>
+                ))}
+              </div>
+              <div>
+                <div className="flex items-center gap-1 mb-1">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 1 + i * 0.05 }}
+                    >
+                      <SafeIcon name="star" size={16} className="text-yellow-500 fill-current" />
+                    </motion.div>
+                  ))}
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="font-bold text-gray-900 dark:text-white">10,000+</span> довольных клиентов
+                </p>
+              </div>
+
+              <div className="hidden sm:block w-px h-12 bg-gray-200 dark:bg-slate-800" />
+
+              <div className="hidden sm:block">
+                <p className="text-2xl font-black text-red-500">50K+</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">наборов продано</p>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Right Content - Hero Image */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
+            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+            transition={{ delay: 0.4, duration: 0.8, type: "spring" }}
+            className="relative"
+          >
+            <div className="relative aspect-square">
+              {/* Glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 via-yellow-500/20 to-blue-500/20 rounded-full blur-3xl animate-pulse-slow" />
+
+              {/* Main image container */}
+              <motion.div
+                animate={{
+                  rotate: [0, 3, -3, 0],
+                  y: [0, -15, 0]
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="relative z-10"
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=800&q=80"
+                  alt="LEGO Set"
+                  className="w-full h-full object-contain drop-shadow-2xl"
+                />
+              </motion.div>
+
+              {/* Floating decorative elements */}
+              <motion.div
+                animate={{
+                  scale: [1, 1.1, 1],
+                  rotate: [0, 180, 360]
+                }}
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                className="absolute top-10 right-10 w-16 h-16 bg-yellow-400 rounded-xl shadow-xl flex items-center justify-center"
+              >
+                <SafeIcon name="zap" size={24} className="text-yellow-900" />
+              </motion.div>
+
+              <motion.div
+                animate={{
+                  y: [0, -20, 0],
+                }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                className="absolute bottom-20 left-0 w-14 h-14 bg-blue-500 rounded-lg shadow-xl flex items-center justify-center"
+              >
+                <SafeIcon name="heart" size={20} className="text-white" />
+              </motion.div>
+
+              <motion.div
+                animate={{
+                  x: [0, 15, 0],
+                  rotate: [0, -15, 0]
+                }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                className="absolute top-1/2 -right-4 w-12 h-12 bg-green-500 rounded-md shadow-xl flex items-center justify-center"
+              >
+                <SafeIcon name="check" size={20} className="text-white" />
+              </motion.div>
+
+              {/* Price tag */}
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1, duration: 0.5 }}
+                className="absolute bottom-10 right-10 bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-xl border border-gray-100 dark:border-slate-700"
+              >
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Стартовая цена</p>
+                <p className="text-3xl font-black text-red-500">от 999 ₽</p>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+      >
+        <span className="text-xs text-gray-500 dark:text-gray-500 uppercase tracking-widest">Листай вниз</span>
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <SafeIcon name="chevron-down" size={24} className="text-gray-400 dark:text-gray-600" />
+        </motion.div>
+      </motion.div>
+    </section>
+  )
+}
+
 // Main App Component
 function App() {
-  const heroRef = useRef(null)
-  const isHeroInView = useInView(heroRef, { once: true })
-
   const products = [
     {
       id: 1,
@@ -378,131 +696,8 @@ function App() {
           </div>
         </motion.header>
 
-        {/* HERO SECTION */}
-        <section
-          ref={heroRef}
-          className="relative pt-32 md:pt-40 pb-20 md:pb-32 px-4 md:px-6 overflow-hidden"
-        >
-          <div className="container mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="relative z-10">
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={isHeroInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.6 }}
-                  className="inline-flex items-center gap-2 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-bold px-4 py-2 rounded-full mb-6"
-                >
-                  <SafeIcon name="flame" size={16} />
-                  <span className="text-sm">Новая коллекция 2024</span>
-                </motion.div>
-
-                <motion.h1
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={isHeroInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.6, delay: 0.1 }}
-                  className="text-5xl md:text-7xl lg:text-8xl font-black text-gray-900 dark:text-white leading-none mb-6 tracking-tighter"
-                >
-                  СТРОЙ <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500">
-                    МЕЧТЫ
-                  </span>
-                </motion.h1>
-
-                <motion.p
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={isHeroInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  className="text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-8 max-w-xl leading-relaxed"
-                >
-                  Официальные наборы LEGO для детей и взрослых. Открой мир безграничного творчества с оригинальными конструкторами.
-                </motion.p>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={isHeroInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.6, delay: 0.3 }}
-                  className="flex flex-col sm:flex-row gap-4"
-                >
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => scrollToSection('products')}
-                    className="bg-red-500 hover:bg-red-600 text-white font-bold text-lg px-8 py-4 rounded-2xl shadow-xl shadow-red-500/30 flex items-center justify-center gap-3 transition-all"
-                  >
-                    <SafeIcon name="shopping-bag" size={20} />
-                    Смотреть каталог
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-900 dark:text-white font-bold text-lg px-8 py-4 rounded-2xl flex items-center justify-center gap-3 transition-all"
-                  >
-                    <SafeIcon name="play-circle" size={20} />
-                    Видео-обзор
-                  </motion.button>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={isHeroInView ? { opacity: 1 } : {}}
-                  transition={{ duration: 0.6, delay: 0.5 }}
-                  className="flex items-center gap-8 mt-12"
-                >
-                  <div className="flex -space-x-3">
-                    {[1,2,3,4].map((i) => (
-                      <div key={i} className="w-10 h-10 rounded-full bg-gray-300 dark:bg-slate-700 border-2 border-white dark:border-slate-950 overflow-hidden">
-                        <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="" className="w-full h-full object-cover" />
-                      </div>
-                    ))}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1 mb-1">
-                      {[1,2,3,4,5].map((i) => (
-                        <SafeIcon key={i} name="star" size={16} className="text-yellow-500 fill-current" />
-                      ))}
-                    </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      <span className="font-bold text-gray-900 dark:text-white">10,000+</span> довольных клиентов
-                    </p>
-                  </div>
-                </motion.div>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={isHeroInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="relative"
-              >
-                <div className="relative aspect-square">
-                  <motion.div
-                    animate={{
-                      rotate: [0, 5, -5, 0],
-                      y: [0, -10, 0]
-                    }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                    className="relative z-10"
-                  >
-                    <img
-                      src="https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=800&q=80"
-                      alt="LEGO Set"
-                      className="w-full h-full object-contain drop-shadow-2xl"
-                    />
-                  </motion.div>
-
-                  {/* Decorative elements */}
-                  <div className="absolute top-10 right-10 w-20 h-20 bg-yellow-400 rounded-2xl rotate-12 opacity-80 blur-sm" />
-                  <div className="absolute bottom-20 left-10 w-16 h-16 bg-blue-500 rounded-full opacity-60 blur-sm" />
-                  <div className="absolute top-1/2 right-0 w-12 h-12 bg-red-500 rounded-lg -rotate-12 opacity-70 blur-sm" />
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
+        {/* HERO SECTION - ТЕПЕРЬ ЯВНО ВЫДЕЛЕНА И УЛУЧШЕНА */}
+        <HeroSection />
 
         {/* FEATURES SECTION */}
         <section className="py-20 px-4 md:px-6 bg-gray-50 dark:bg-slate-900/50">
